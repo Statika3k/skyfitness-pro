@@ -1,0 +1,80 @@
+.courseList {
+  padding-bottom: 80px;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 50px;
+}
+
+.listTitle {
+  color: #000000;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 100%;
+  margin: 0;
+  width: 890px;
+}
+
+.sloganBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sloganText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-bottom: 34px;
+}
+
+.scrollToTopButton {
+  border-radius: 46px;
+  background: #bcec30;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  padding: 16px 26px;
+  width: 127px;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  transition: background 0.2s;
+}
+
+.scrollToTopButton:hover {
+  background: #c6ff00;
+}
+
+@media (max-width: 426px) {
+  .listHeader {
+    flex-direction: column;
+  }
+  
+  .listTitle {
+    font-size: 32px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  
+  .sloganBlock {
+    display: none;
+  }
+  
+  .coursesGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

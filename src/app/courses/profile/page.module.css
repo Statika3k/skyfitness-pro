@@ -1,0 +1,333 @@
+.profilePage {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 20px;
+  color: #666;
+}
+
+.profileSection {
+  margin-bottom: 60px;
+}
+
+.profileCard {
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 40px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.avatarWrapper {
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  width: 197px;
+  height: 197px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.profileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.userName {
+  font-size: 32px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  line-height: 110%;
+}
+
+.userLogin {
+  font-size: 18px;
+  color: #666666;
+  margin: 0;
+}
+
+.logoutButton {
+  align-self: flex-start;
+  border-radius: 46px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.logoutButton:hover {
+  background: #f7f7f7;
+}
+
+.coursesSection {
+  margin-top: 60px;
+}
+
+.sectionTitle {
+  font-size: 40px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 40px 0;
+  line-height: 110%;
+}
+
+.noCourses {
+  text-align: center;
+  padding: 80px 20px;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+}
+
+.noCourses p {
+  font-size: 20px;
+  color: #666666;
+  margin: 0 0 24px 0;
+}
+
+.browseButton {
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.browseButton:hover {
+  background: #c6ff00;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.courseCard {
+  background: #ffffff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  transition: transform 0.2s;
+}
+
+.courseCard:hover {
+  transform: translateY(-5px);
+}
+
+.courseImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.courseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  font-size: 20px;
+  font-weight: 300;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton:hover {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+.courseContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.courseTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  line-height: 110%;
+}
+
+.courseMeta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  font-size: 14px;
+  color: #666666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.courseDifficulty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.difficultyLabel {
+  font-size: 14px;
+  color: #666666;
+}
+
+.difficultyValue {
+  font-size: 14px;
+  color: #000000;
+  font-weight: 500;
+}
+
+.progressWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #bcec30;
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 14px;
+  color: #666666;
+  text-align: right;
+}
+
+.actionButton {
+  border-radius: 46px;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.button-not-started {
+  background: #bcec30;
+  color: #000000;
+}
+
+.button-not-started:hover {
+  background: #c6ff00;
+}
+
+.button-in-progress {
+  background: #bcec30;
+  color: #000000;
+}
+
+.button-in-progress:hover {
+  background: #c6ff00;
+}
+
+.button-completed {
+  background: #000000;
+  color: #ffffff;
+}
+
+.button-completed:hover {
+  background: #333333;
+}
+
+@media (max-width: 1024px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .profilePage {
+    padding: 20px 16px 60px;
+  }
+  
+  .profileCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+  }
+  
+  .profileInfo {
+    align-items: center;
+  }
+  
+  .logoutButton {
+    align-self: center;
+  }
+  
+  .sectionTitle {
+    font-size: 28px;
+  }
+  
+  .coursesGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .courseImageWrapper {
+    height: 180px;
+  }
+  
+  .courseTitle {
+    font-size: 20px;
+  }
+}

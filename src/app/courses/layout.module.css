@@ -1,0 +1,17 @@
+.layoutWrapper {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+.layoutContainer {
+  padding-left: calc(50% - 580px);
+  padding-right: calc(50% - 580px);
+}
+
+@media (max-width: 1200px) {
+  .layoutContainer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
