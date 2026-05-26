@@ -1,0 +1,97 @@
+.modal__logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.modal__input {
+  width: 100%;
+  border: 1px solid #d0cece;
+  border-radius: 8px;
+  padding: 16px 18px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: #000000;
+  transition: border-color 0.2s;
+}
+
+.modal__input:focus {
+  outline: none;
+  border-color: #bcec30;
+}
+
+.modal__input::placeholder {
+  color: #d0cece;
+}
+
+.modal__input:disabled {
+  background-color: #f7f7f7;
+  cursor: not-allowed;
+}
+
+.errorContainer {
+  color: #db0030;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 110%;
+  text-align: center;
+  padding: 10px 0;
+  min-height: 20px;
+}
+
+.modal__btnSignupEnt {
+  border-radius: 46px;
+  border: 1px solid #bcec30;
+  background: #bcec30;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  text-align: center;
+  padding: 16px 26px;
+  cursor: pointer;
+  transition: all 0.2s;  
+}
+
+.modal__btnSignupEnt:hover:not(:disabled) {
+  background: #c6ff00;
+  border-color: #c6ff00;
+}
+
+.modal__btnSignupEnt:active:not(:disabled) {
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
+}
+
+.buttonDisabled {
+  background: #f7f7f7 !important;
+  border-color: #f7f7f7 !important;
+  color: #999999 !important;
+  cursor: not-allowed;
+}
+
+.modal__btnSignin {
+  border: 1px solid #000000;
+  border-radius: 46px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  text-align: center;
+  padding: 16px 26px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s;  
+}
+
+.modal__btnSignin:hover {
+  background: #f7f7f7;
+}
+
+.modal__btnSignin:active {
+  background: #e9eced;
+}

@@ -1,0 +1,6 @@
+.mainScroll {
+  max-height: 1300px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 80px;
+}
