@@ -194,8 +194,8 @@ export default function ProfilePage() {
                     <Image
                       src={`/images/${course.nameEN.toLowerCase()}.jpg`}
                       alt={course.nameRU}
-                      width={320}
-                      height={200}
+                      width={360}
+                      height={325}
                       className={styles.courseImage}
                     />
                     <button
@@ -203,7 +203,12 @@ export default function ProfilePage() {
                       onClick={() => handleDeleteCourse(course._id)}
                       aria-label="Удалить курс"
                     >
-                      −
+                      <Image
+                        width={32}
+                        height={32}
+                        src="/images/minus.svg"
+                        alt="Удалить курс"
+                      />
                     </button>
                   </div>
 
@@ -211,34 +216,49 @@ export default function ProfilePage() {
                     <h3 className={styles.courseTitle}>{course.nameRU}</h3>
 
                     <div className={styles.courseMeta}>
-                      <span className={styles.metaItem}>
-                        📅 {course.durationInDays} дней
-                      </span>
-                      <span className={styles.metaItem}>
-                        ⏱ {course.dailyDurationInMinutes.from}-
-                        {course.dailyDurationInMinutes.to} мин/день
-                      </span>
+                      <div className={styles.metaItem}>
+                        <Image
+                          width={18}
+                          height={18}
+                          src="/images/calendar.svg"
+                          alt=""
+                        />
+                        <span>{course.durationInDays} дней</span>
+                      </div>
+                      <div className={styles.metaItem}>
+                        <Image
+                          width={18}
+                          height={18}
+                          src="/images/watch.svg"
+                          alt=""
+                        />
+                        <span>
+                          {course.dailyDurationInMinutes.from}-
+                          {course.dailyDurationInMinutes.to} мин/день
+                        </span>
+                      </div>
                     </div>
 
                     <div className={styles.courseDifficulty}>
-                      <span className={styles.difficultyLabel}>Сложность</span>
-                      <span className={styles.difficultyValue}>
-                        {course.difficulty === 'начальный' && 'Легкий'}
-                        {course.difficulty === 'средний' && 'Средний'}
-                        {course.difficulty === 'сложный' && 'Сложный'}
-                      </span>
+                      <Image
+                        width={18}
+                        height={18}
+                        src="/images/level.svg"
+                        alt=""
+                      />
+                      <span>Сложность</span>                      
                     </div>
 
                     <div className={styles.progressWrapper}>
+                      <span className={styles.progressText}>
+                        Прогресс {progress}%
+                      </span>
                       <div className={styles.progressBar}>
                         <div
                           className={styles.progressFill}
                           style={{ width: `${progress}%` }}
                         />
                       </div>
-                      <span className={styles.progressText}>
-                        Прогресс {progress}%
-                      </span>
                     </div>
 
                     <button

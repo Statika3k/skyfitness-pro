@@ -3,7 +3,7 @@ import styles from './CourseCard.module.css';
 import Link from 'next/link';
 
 interface Course {
-  id: number;
+  id: string;
   title: string;
   duration: string;
   timePerDay: string;

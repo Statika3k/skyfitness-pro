@@ -4,57 +4,53 @@ import styles from './CourseList.module.css';
 import CourseCard from '../CourseCard/CourseCard';
 import { Course } from '@/types';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { getAllCourses } from '@/services/courses/coursesApi';
+import { mapApiCourseToUI } from '@/utils/helpers';
 
-
-const coursesData: Course[] = [
-  {
-    id: 1,
-    title: 'Йога',
-    duration: '25 дней',
-    timePerDay: '20-50 мин/день',
-    difficulty: 'easy', 
-    imageUrl: '/images/yoga.jpg',
-    color: '#ffc700',
-  },
-  {
-    id: 2,
-    title: 'Стретчинг',
-    duration: '25 дней',
-    timePerDay: '20-50 мин/день',
-    difficulty: 'medium',
-    imageUrl: '/images/stretching.jpg',
-    color: '#2491d2',
-  },
-  {
-    id: 3,
-    title: 'Фитнес',
-    duration: '25 дней',
-    timePerDay: '20-50 мин/день',
-    difficulty: 'hard',
-    imageUrl: '/images/fitnes.jpg',
-    color: '#f7a012',
-  },
-  {
-    id: 4,
-    title: 'Степ-аэробика',
-    duration: '25 дней',
-    timePerDay: '20-50 мин/день',
-    difficulty: 'medium',
-    imageUrl: '/images/step.jpg',
-    color: '#ff7e65',
-  },
-  {
-    id: 5,
-    title: 'Бодифлекс',
-    duration: '25 дней',
-    timePerDay: '20-50 мин/день',
-    difficulty: 'easy',
-    imageUrl: '/images/bodyflex.jpg',
-    color: '#7d458c',
-  },
-];
 
 export default function CourseList() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setIsLoading(true);
+        const apiCourses = await getAllCourses();        
+        const uiCourses = apiCourses.map(mapApiCourseToUI);
+        setCourses(uiCourses);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching courses:', err);
+        setError('Не удалось загрузить курсы. Попробуйте позже.');
+        setCourses([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className={styles.loading}>
+        <p>Загрузка курсов...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.error}>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Попробовать снова</button>
+      </div>
+    );
+  }
+
   return (
     <div id="top" className={styles.courseList}>
       <div className={styles.listHeader}>
@@ -75,7 +71,7 @@ export default function CourseList() {
       </div>
       
       <div className={styles.coursesGrid}>
-        {coursesData.map((course) => (
+        {courses.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}
       </div>
