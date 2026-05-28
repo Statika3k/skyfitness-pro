@@ -8,6 +8,12 @@ export const getAllCourses = (): Promise<CourseType[]> => {
   });
 };
 
+export const getCourseById = (courseId: string): Promise<CourseType> => {
+  return axios.get(`${BASE_URL}/courses/${courseId}`).then((res) => {
+    return res.data;
+  });
+};
+
 export const addUserCourse = (
   token: string,
   courseId: string,

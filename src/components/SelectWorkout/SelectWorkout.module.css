@@ -1,0 +1,240 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  width: 460px;
+  min-height: 609px;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  line-height: 110%;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: #666666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: #000000;
+}
+
+.workoutsList {
+  width: 380px;
+  min-height: 446px;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.workoutsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.workoutsList::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.workoutsList::-webkit-scrollbar-thumb {
+  background: #d0cece;
+  border-radius: 10px;
+}
+
+.workoutsList::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+  color: #666666;
+}
+
+.workoutItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 2px solid transparent;
+}
+
+.workoutItem:hover {
+  background: #fafafa;
+}
+
+.workoutItem.selected {
+  border-color: #bcec30;
+  background: #f9ffe8;
+}
+
+.workoutIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.checkmark {
+  width: 24px;
+  height: 24px;
+  background: #bcec30;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d0cece;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.workoutItem.selected .radio {
+  border-color: #bcec30;
+  background: #bcec30;
+}
+
+.workoutInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.workoutName {
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+  line-height: 120%;
+}
+
+.workoutCourse,
+.workoutDay {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+}
+
+.workoutDay {
+  color: #999999;
+}
+
+.startButton {
+  width: 100%;
+  height: 52px;
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.startButton:hover:not(.disabled) {
+  background: #c6ff00;
+}
+
+.startButton.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: calc(100% - 40px);
+    min-height: auto;
+    max-height: 80vh;
+    gap: 32px;
+    padding: 24px;
+  }
+
+  .workoutsList {
+    width: 100%;
+    min-height: auto;
+    max-height: 400px;
+    gap: 24px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

@@ -1,0 +1,136 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  width: 426px;
+  height: 595.5px;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  line-height: 110%;
+}
+
+.exercisesList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+  padding-right: 10px;
+  flex: 1;
+}
+
+.exercisesList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.exercisesList::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.exercisesList::-webkit-scrollbar-thumb {
+  background: #d0cece;
+  border-radius: 10px;
+}
+
+.exerciseItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exerciseLabel {
+  font-size: 16px;
+  color: #000000;
+  font-weight: 400;
+  line-height: 120%;
+}
+
+.input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid #d0cece;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #bcec30;
+}
+
+.saveButton {
+  width: 100%;
+  height: 52px;
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.saveButton:hover {
+  background: #c6ff00;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: calc(100% - 40px);
+    height: auto;
+    max-height: 80vh;
+    gap: 32px;
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

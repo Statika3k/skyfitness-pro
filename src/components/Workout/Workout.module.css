@@ -1,0 +1,235 @@
+.workout {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 40px 0 80px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 20px;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 20px;
+}
+
+.error p {
+  color: #db0030;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.error button {
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.error button:hover {
+  background: #c6ff00;
+}
+
+.videoContainer {
+  width: 1160px;
+  height: 639px;
+  border-radius: 30px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+}
+
+.videoWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.videoFrame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.progressBlock {
+  width: 1160px;
+  min-height: 375px;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 40px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.blockTitle {
+  font-size: 32px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  line-height: 110%;
+}
+
+.exercisesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.exerciseCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 20px;
+}
+
+.exerciseName {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+  line-height: 120%;
+  min-height: 40px;
+}
+
+.progressInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid #d0cece;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #bcec30;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: #666666;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #00C1FF;
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.saveButton {
+  width: 320px;
+  height: 52px;
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 16px 26px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #c6ff00;
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resetButton {
+  border-radius: 46px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resetButton:hover {
+  background: #f7f7f7;
+}
+
+@media (max-width: 1200px) {
+  .videoContainer,
+  .progressBlock {
+    width: 100%;
+    max-width: 1160px;
+  }
+
+  .videoContainer {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 768px) {
+  .videoContainer {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .progressBlock {
+    padding: 24px;
+  }
+
+  .exercisesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .blockTitle {
+    font-size: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

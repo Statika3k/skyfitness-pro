@@ -58,6 +58,46 @@
   background: #c6ff00;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 20px;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 20px;
+}
+
+.error p {
+  color: #db0030;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.error button {
+  border-radius: 46px;
+  background: #bcec30;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.error button:hover {
+  background: #c6ff00;
+}
+
 @media (max-width: 426px) {
   .listHeader {
     flex-direction: column;

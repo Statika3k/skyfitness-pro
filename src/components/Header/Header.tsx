@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import styles from './header.module.css';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/store';
 import { setToken, setUser, setUserName } from '@/store/features/AuthSlice';
@@ -11,9 +11,10 @@ import UserMenu from '../UserMenu/UserMenu';
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { token, userName, user } = useAppSelector((state) => state.auth);
-  const [showDropdown, setShowDropdown] = useState(false);  
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -52,6 +53,8 @@ export default function Header() {
     setShowDropdown(false);
   };
 
+  const showSlogan = pathname !== '/courses/profile' && !pathname?.startsWith('/courses/workout');
+
   return (
     <header className={styles.header}>
       <div className={styles.headerGroup}>
@@ -65,7 +68,9 @@ export default function Header() {
             priority
           />
         </Link>
-        <p className={styles.logoText}>Онлайн-тренировки для занятий дома</p>
+        {showSlogan && (
+          <p className={styles.logoText}>Онлайн-тренировки для занятий дома</p>
+        )}
       </div>
 
       {token ? (

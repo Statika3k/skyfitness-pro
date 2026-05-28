@@ -1,59 +1,90 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useAppSelector } from '@/store/store';
-import { addUserCourse } from '@/services/courses/coursesApi';
-
-// Временные данные курса (позже будут приходить из API)
-const courseData = {
-  id: '1',
-  title: 'Йога',
-  color: '#ffc700',
-  imageUrl: '/images/yoga.jpg',
-  fitting: [
-    'Давно хотели попробовать йогу, но не решались начать',
-    'Хотите укрепить позвоночник, избавиться от болей в спине и суставах',
-    'Ищете активность, полезную для тела и души',
-  ],
-  directions: [
-    'Йога для новичков',
-    'Классическая йога',
-    'Кундалини-йога',
-    'Йогатерапия',
-    'Хатха-йога',
-    'Аштанга-йога',
-  ],
-};
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { getCourseById, addUserCourse, getAllCourses } from '@/services/courses/coursesApi';
+import { CourseType } from '@/sharedTypes/sharedTypes';
+import { mapApiCourseToUI } from '@/utils/helpers';
+import { Course } from '@/types';
+import { addSelectedCourse, setSelectedCourses } from '@/store/features/CourseSlice';
+import { getUserInfo } from '@/services/auth/authApi';
 
 export default function CoursePage() {
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
+  const { selectedCourses } = useAppSelector((state) => state.courses);
+  const [course, setCourse] = useState<CourseType | null>(null);
+  const [uiCourse, setUiCourse] = useState<Course | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
 
-  const [isCourseAdded, setIsCourseAdded] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const courseId = params.id as string;
+  const isCourseAdded = selectedCourses.some((c) => c._id === courseId);
+
+  useEffect(() => {
+    const syncUserCourses = async () => {
+      // Загружаем только если есть токен и список в Redux ещё пуст
+      if (token && selectedCourses.length === 0) {
+        try {
+          const userInfo = await getUserInfo(token);
+          const allCourses = await getAllCourses();
+          
+          // Фильтруем только те курсы, которые добавил пользователь
+          const userCourses = allCourses.filter((course) =>
+            userInfo.selectedCourses.includes(course._id)
+          );
+          
+          dispatch(setSelectedCourses(userCourses));
+        } catch (error) {
+          console.error('Ошибка синхронизации курсов:', error);
+        }
+      }
+    };
+
+    syncUserCourses();
+  }, [token, selectedCourses.length, dispatch]);
+
+  useEffect(() => {
+    if (!courseId) return;
+
+    const fetchCourse = async () => {
+      try {
+        setIsLoading(true);
+        const courseData = await getCourseById(courseId);
+        setCourse(courseData);
+        setUiCourse(mapApiCourseToUI(courseData));
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching course:', err);
+        setError('Не удалось загрузить курс');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [courseId]);
 
   const handleAddCourse = async () => {
-    if (!token) {
+    if (!token || !course) {
       router.push('/auth/signin');
       return;
     }
-
-    setIsLoading(true);
-    setErrorMessage('');
-
+    setIsAdding(true);
     try {
-      await addUserCourse(token, params.id as string);
-      setIsCourseAdded(true);
-    } catch (error) {
-      console.error('Error adding course:', error);
-      setErrorMessage('Не удалось добавить курс. Попробуйте позже.');
+      await addUserCourse(token, course._id);      
+      dispatch(addSelectedCourse(course));
+    } catch (err) {
+      console.error('Error adding course:', err);
+      alert('Не удалось добавить курс');
     } finally {
-      setIsLoading(false);
+      setIsAdding(false)
     }
   };
 
@@ -61,17 +92,32 @@ export default function CoursePage() {
     router.push('/auth/signin');
   };
 
+  if (isLoading) {
+    return <div className={styles.loading}>Загрузка курса...</div>;
+  }
+
+  if (error || !course || !uiCourse) {
+    return (
+      <div className={styles.error}>
+        <p>{error || 'Курс не найден'}</p>
+        <button onClick={() => router.push('/courses/main')}>
+          Вернуться к каталогу
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.coursePage}>
-      <header
-        className={styles.header}
-        style={{ backgroundColor: courseData.color }}
+      <header 
+        className={styles.header} 
+        style={{ backgroundColor: uiCourse.color }}
       >
-        <h1 className={styles.title}>{courseData.title}</h1>
+        <h1 className={styles.title}>{course.nameRU}</h1>
         <div className={styles.headerImageWrapper}>
           <Image
-            src={courseData.imageUrl}
-            alt={courseData.title}
+            src={uiCourse.imageUrl}
+            alt={course.nameRU}
             fill
             className={styles.headerImage}
             priority
@@ -83,7 +129,7 @@ export default function CoursePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
           <div className={styles.fittingGrid}>
-            {courseData.fitting.map((text, index) => (
+            {course.fitting?.map((text: string, index: number) => (
               <div key={index} className={styles.fittingCard}>
                 <span className={styles.cardNumber}>{index + 1}</span>
                 <p className={styles.cardText}>{text}</p>
@@ -95,16 +141,9 @@ export default function CoursePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Направления</h2>
           <div className={styles.directionsBlock}>
-            {courseData.directions.map((dir, index) => (
+            {course.directions?.map((dir: string, index: number) => (
               <div key={index} className={styles.directionItem}>
-                <span className={styles.directionIcon}>
-                  <Image
-                    src="/images/Star.svg"
-                    alt="star"
-                    width={24}
-                    height={24}
-                  />
-                </span>
+                <span className={styles.directionIcon}>✦</span>
                 <span className={styles.directionText}>{dir}</span>
               </div>
             ))}
@@ -124,13 +163,9 @@ export default function CoursePage() {
               <li>помогают противостоять стрессам</li>
             </ul>
 
-            {errorMessage && (
-              <p className={styles.errorMessage}>{errorMessage}</p>
-            )}
-
-            {!!token ? (
+            {token ? (
               isCourseAdded ? (
-                <button
+                <button 
                   className={styles.primaryButton}
                   disabled
                   style={{ background: '#cccccc', cursor: 'not-allowed' }}
@@ -138,16 +173,16 @@ export default function CoursePage() {
                   Курс добавлен ✓
                 </button>
               ) : (
-                <button
+                <button 
                   className={styles.primaryButton}
                   onClick={handleAddCourse}
-                  disabled={isLoading}
+                  disabled={isAdding}
                 >
-                  {isLoading ? 'Добавление...' : 'Добавить курс'}
+                  {isAdding ? 'Добавление...' : 'Добавить курс'}
                 </button>
               )
             ) : (
-              <button
+              <button 
                 className={styles.primaryButton}
                 onClick={handleLoginClick}
               >
