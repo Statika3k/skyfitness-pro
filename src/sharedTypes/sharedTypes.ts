@@ -19,3 +19,8 @@ export type CourseType = {
 export type AddCourseResponse = {
   message: string;
 };
+
+export type WorkoutListItem = {
+  _id: string;
+  name: string;
+}

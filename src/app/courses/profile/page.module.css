@@ -33,7 +33,7 @@
 
 .avatarPlaceholder {
   width: 197px;
-  height: 197px;
+  height: 197px;  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,7 +242,7 @@
 
 .progressFill {
   height: 100%;
-  background: #bcec30;
+  background: #00C1FF;
   border-radius: 50px;
   transition: width 0.3s ease;
 }
@@ -254,40 +254,19 @@
 
 .actionButton {
   border-radius: 46px;
+  background: #bcec30;
   border: none;
+  color: #000000;
   font-size: 16px;
   font-weight: 400;
   padding: 14px 24px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
   width: 100%;
 }
 
-.button-not-started {
-  background: #bcec30;
-  color: #000000;
-}
-
-.button-not-started:hover {
+.actionButton:hover {
   background: #c6ff00;
-}
-
-.button-in-progress {
-  background: #bcec30;
-  color: #000000;
-}
-
-.button-in-progress:hover {
-  background: #c6ff00;
-}
-
-.button-completed {
-  background: #000000;
-  color: #ffffff;
-}
-
-.button-completed:hover {
-  background: #333333;
 }
 
 @media (max-width: 1024px) {

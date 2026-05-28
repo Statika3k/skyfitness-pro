@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authSliceReducer } from './features/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { courseSliceReducer } from './features/CourseSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       auth: authSliceReducer,
+      courses: courseSliceReducer,
     },
   });
 };

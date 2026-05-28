@@ -4,25 +4,53 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
-import { useAppSelector } from '@/store/store';
-import { getCourseById, addUserCourse } from '@/services/courses/coursesApi';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { getCourseById, addUserCourse, getAllCourses } from '@/services/courses/coursesApi';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { mapApiCourseToUI } from '@/utils/helpers';
 import { Course } from '@/types';
+import { addSelectedCourse, setSelectedCourses } from '@/store/features/CourseSlice';
+import { getUserInfo } from '@/services/auth/authApi';
 
 export default function CoursePage() {
   const params = useParams();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
-
+  const { selectedCourses } = useAppSelector((state) => state.courses);
   const [course, setCourse] = useState<CourseType | null>(null);
   const [uiCourse, setUiCourse] = useState<Course | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isCourseAdded, setIsCourseAdded] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const courseId = params.id as string;
+  const isCourseAdded = selectedCourses.some((c) => c._id === courseId);
 
   useEffect(() => {
-    const courseId = params.id as string;
+    const syncUserCourses = async () => {
+      // Загружаем только если есть токен и список в Redux ещё пуст
+      if (token && selectedCourses.length === 0) {
+        try {
+          const userInfo = await getUserInfo(token);
+          const allCourses = await getAllCourses();
+          
+          // Фильтруем только те курсы, которые добавил пользователь
+          const userCourses = allCourses.filter((course) =>
+            userInfo.selectedCourses.includes(course._id)
+          );
+          
+          dispatch(setSelectedCourses(userCourses));
+        } catch (error) {
+          console.error('Ошибка синхронизации курсов:', error);
+        }
+      }
+    };
+
+    syncUserCourses();
+  }, [token, selectedCourses.length, dispatch]);
+
+  useEffect(() => {
     if (!courseId) return;
 
     const fetchCourse = async () => {
@@ -41,22 +69,27 @@ export default function CoursePage() {
     };
 
     fetchCourse();
-  }, [params.id]);
+  }, [courseId]);
 
   const handleAddCourse = async () => {
     if (!token || !course) {
       router.push('/auth/signin');
       return;
     }
-
+    setIsAdding(true);
     try {
-      await addUserCourse(token, course._id);
-      setIsCourseAdded(true);
-      alert('Курс успешно добавлен!');
+      await addUserCourse(token, course._id);      
+      dispatch(addSelectedCourse(course));
     } catch (err) {
       console.error('Error adding course:', err);
       alert('Не удалось добавить курс');
+    } finally {
+      setIsAdding(false)
     }
+  };
+
+  const handleLoginClick = () => {
+    router.push('/auth/signin');
   };
 
   if (isLoading) {
@@ -76,8 +109,8 @@ export default function CoursePage() {
 
   return (
     <div className={styles.coursePage}>
-      <header
-        className={styles.header}
+      <header 
+        className={styles.header} 
         style={{ backgroundColor: uiCourse.color }}
       >
         <h1 className={styles.title}>{course.nameRU}</h1>
@@ -132,7 +165,7 @@ export default function CoursePage() {
 
             {token ? (
               isCourseAdded ? (
-                <button
+                <button 
                   className={styles.primaryButton}
                   disabled
                   style={{ background: '#cccccc', cursor: 'not-allowed' }}
@@ -140,17 +173,18 @@ export default function CoursePage() {
                   Курс добавлен ✓
                 </button>
               ) : (
-                <button
+                <button 
                   className={styles.primaryButton}
                   onClick={handleAddCourse}
+                  disabled={isAdding}
                 >
-                  Добавить курс
+                  {isAdding ? 'Добавление...' : 'Добавить курс'}
                 </button>
               )
             ) : (
-              <button
+              <button 
                 className={styles.primaryButton}
-                onClick={() => router.push('/auth/signin')}
+                onClick={handleLoginClick}
               >
                 Войдите, чтобы добавить курс
               </button>
@@ -166,7 +200,6 @@ export default function CoursePage() {
               className={styles.blackVector}
               priority
             />
-
             <Image
               src="/images/VectorGreen.png"
               alt="Декоративная зеленая линия"
@@ -175,7 +208,6 @@ export default function CoursePage() {
               className={styles.greenVector}
               priority
             />
-
             <Image
               src="/images/runner.png"
               alt="Бегун"

@@ -2,54 +2,45 @@
 
 import styles from './CourseList.module.css';
 import CourseCard from '../CourseCard/CourseCard';
-import { Course } from '@/types';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getAllCourses } from '@/services/courses/coursesApi';
 import { mapApiCourseToUI } from '@/utils/helpers';
-
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  setAllCourses,
+  setError,
+  setLoading,
+} from '@/store/features/CourseSlice';
+import { Course } from '@/types';
 
 export default function CourseList() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { allCourses, isLoading, error } = useAppSelector(
+    (state) => state.courses,
+  );
 
   useEffect(() => {
     const fetchCourses = async () => {
+      dispatch(setLoading(true));
       try {
-        setIsLoading(true);
-        const apiCourses = await getAllCourses();        
-        const uiCourses = apiCourses.map(mapApiCourseToUI);
-        setCourses(uiCourses);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching courses:', err);
-        setError('Не удалось загрузить курсы. Попробуйте позже.');
-        setCourses([]);
+        const apiCourses = await getAllCourses();
+        dispatch(setAllCourses(apiCourses));
+        dispatch(setError(null));
+      } catch (error) {
+        console.error('Error loading courses:', error);
+        dispatch(setError('Не удалось загрузить курсы'));
       } finally {
-        setIsLoading(false);
+        dispatch(setLoading(false));
       }
     };
-
     fetchCourses();
-  }, []);
+  }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <p>Загрузка курсов...</p>
-      </div>
-    );
-  }
+  const uiCourses: Course[] = allCourses.map(mapApiCourseToUI);
 
-  if (error) {
-    return (
-      <div className={styles.error}>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()}>Попробовать снова</button>
-      </div>
-    );
-  }
+  if (isLoading) return <div className={styles.loading}>Загрузка...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
 
   return (
     <div id="top" className={styles.courseList}>
@@ -60,28 +51,29 @@ export default function CourseList() {
         <div className={styles.sloganBlock}>
           <div className={styles.sloganText}>
             <Image
-            width={288}
-            height={120}
-            src="/images/Title-pic.svg"
-            alt="Измени своё тело!"
+              width={288}
+              height={120}
+              src="/images/Title-pic.svg"
+              alt="Измени своё тело!"
             />
-
           </div>
         </div>
       </div>
-      
+
       <div className={styles.coursesGrid}>
-        {courses.map((course) => (
+        {uiCourses.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}
       </div>
-      
+
       <a
         href="#top"
         className={styles.scrollToTopButton}
         onClick={(e) => {
           e.preventDefault();
-          document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
+          document
+            .getElementById('top')
+            ?.scrollIntoView({ behavior: 'smooth' });
         }}
       >
         Наверх ↑

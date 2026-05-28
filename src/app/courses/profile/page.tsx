@@ -1,35 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
 import { useAppSelector, useAppDispatch } from '@/store/store';
-import { clearAuth, setUser } from '@/store/features/AuthSlice';
+import { clearAuth } from '@/store/features/AuthSlice';
+import {
+  setSelectedCourses,
+  setCourseProgress,
+  openSelectWorkoutModal,
+  closeSelectWorkoutModal,
+  setLoading,
+  setError,
+} from '@/store/features/CourseSlice';
 import { getUserInfo } from '@/services/auth/authApi';
-import { CourseType } from '@/sharedTypes/sharedTypes';
 import { getAllCourses } from '@/services/courses/coursesApi';
-
-type CourseProgress = {
-  courseId: string;
-  courseCompleted: boolean;
-  workoutsProgress: Array<{
-    workoutId: string;
-    workoutCompleted: boolean;
-    progressData: number[];
-  }>;
-};
+import { CourseType } from '@/sharedTypes/sharedTypes';
+import SelectWorkout from '@/components/SelectWorkout/SelectWorkout';
+import { WorkoutProgressType } from '@/services/workouts/workoutsApi';
 
 export default function ProfilePage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, token, userName } = useAppSelector((state) => state.auth);
 
-  const [courses, setCourses] = useState<CourseType[]>([]);
-  const [courseProgress, setCourseProgress] = useState<
-    Record<string, CourseProgress>
-  >({});
-  const [isLoading, setIsLoading] = useState(true);
+  const { token, userName, user } = useAppSelector((state) => state.auth);
+  const {
+    selectedCourses,
+    courseProgress,
+    isSelectWorkoutOpen,
+    selectedCourseIdForModal,
+  } = useAppSelector((state) => state.courses);
 
   useEffect(() => {
     if (!token) {
@@ -38,38 +39,46 @@ export default function ProfilePage() {
     }
 
     const fetchData = async () => {
+      dispatch(setLoading(true));
       try {
         const userInfo = await getUserInfo(token);
-        dispatch(setUser(userInfo));
-        localStorage.setItem('user', JSON.stringify(userInfo));
-
         const allCourses = await getAllCourses();
-        const userCourses = allCourses.filter((course) =>
+        const userCourses = allCourses.filter((course: CourseType) =>
           userInfo.selectedCourses.includes(course._id),
         );
 
-        setCourses(userCourses);
+        dispatch(setSelectedCourses(userCourses));
 
         const progressPromises = userCourses.map(async (course) => {
-          const response = await fetch(
-            `/api/fitness/users/me/progress?courseId=${course._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
+          try {
+            const response = await fetch(
+              `/api/fitness/users/me/progress?courseId=${course._id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            },
-          );
-          if (response.ok) {
-            const progress: CourseProgress = await response.json();
-            setCourseProgress((prev) => ({ ...prev, [course._id]: progress }));
+            );
+            if (response.ok) {
+              const progressData = await response.json();
+              dispatch(
+                setCourseProgress({ courseId: course._id, data: progressData }),
+              );
+            }
+          } catch (err) {
+            console.error(
+              `Error fetching progress for course ${course._id}:`,
+              err,
+            );
           }
         });
 
         await Promise.all(progressPromises);
       } catch (error) {
         console.error('Error fetching profile data:', error);
+        dispatch(setError('Ошибка загрузки данных'));
       } finally {
-        setIsLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
@@ -81,39 +90,8 @@ export default function ProfilePage() {
     router.push('/courses/main');
   };
 
-  const calculateCourseProgress = (courseId: string): number => {
-    const progress = courseProgress[courseId];
-    if (
-      !progress ||
-      !progress.workoutsProgress ||
-      progress.workoutsProgress.length === 0
-    ) {
-      return 0;
-    }
-
-    const completedWorkouts = progress.workoutsProgress.filter(
-      (wp) => wp.workoutCompleted,
-    ).length;
-
-    const course = courses.find((c) => c._id === courseId);
-    if (!course || course.workouts.length === 0) {
-      return 0;
-    }
-
-    return Math.round((completedWorkouts / course.workouts.length) * 100);
-  };
-
-  const getCourseStatus = (
-    courseId: string,
-  ): 'not-started' | 'in-progress' | 'completed' => {
-    const progress = calculateCourseProgress(courseId);
-    if (progress === 0) return 'not-started';
-    if (progress === 100) return 'completed';
-    return 'in-progress';
-  };
-
   const handleStartCourse = (courseId: string) => {
-    router.push(`/courses/workouts/${courseId}`);
+    dispatch(openSelectWorkoutModal(courseId));
   };
 
   const handleDeleteCourse = async (courseId: string) => {
@@ -129,23 +107,59 @@ export default function ProfilePage() {
       );
 
       if (response.ok) {
-        setCourses(courses.filter((c) => c._id !== courseId));
+        const updatedCourses = selectedCourses.filter(
+          (c) => c._id !== courseId,
+        );
+        dispatch(setSelectedCourses(updatedCourses));
       }
     } catch (error) {
       console.error('Error deleting course:', error);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <p>Загрузка профиля...</p>
-      </div>
-    );
+  const calculateCourseProgress = (courseId: string): number => {
+  const progress = courseProgress[courseId];
+  
+  const course = selectedCourses.find((c) => c._id === courseId);
+  if (!course || !course.workouts || course.workouts.length === 0) {
+    return 0;
   }
+  
+  const totalWorkouts = course.workouts.length; 
+  
+  if (!progress?.workoutsProgress) {
+    return 0;
+  }
+  
+  const completedWorkouts = progress.workoutsProgress.filter(
+    (wp: WorkoutProgressType) => wp.workoutCompleted
+  ).length;
+  
+  return Math.round((completedWorkouts / totalWorkouts) * 100);
+};
+
+  const getCourseStatus = (
+    courseId: string,
+  ): 'not-started' | 'in-progress' | 'completed' => {
+    const progress = calculateCourseProgress(courseId);
+    if (progress === 0) return 'not-started';
+    if (progress === 100) return 'completed';
+    return 'in-progress';
+  };
+
+  const handleSelectWorkout = (workoutId: string) => {
+    if (selectedCourseIdForModal) {
+      router.push(
+        `/courses/workout/${workoutId}?courseId=${selectedCourseIdForModal}`,
+      );
+      dispatch(closeSelectWorkoutModal());
+    }
+  };
 
   return (
     <div className={styles.profilePage}>
+      <h1 className={styles.pageTitle}>Профиль</h1>
+
       <section className={styles.profileSection}>
         <div className={styles.profileCard}>
           <div className={styles.avatarWrapper}>
@@ -160,7 +174,7 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.profileInfo}>
-            <h1 className={styles.userName}>{userName || 'Пользователь'}</h1>
+            <h2 className={styles.userName}>{userName || 'Пользователь'}</h2>
             <p className={styles.userLogin}>Логин: {user?.email || ''}</p>
             <button className={styles.logoutButton} onClick={handleLogout}>
               Выйти
@@ -172,7 +186,7 @@ export default function ProfilePage() {
       <section className={styles.coursesSection}>
         <h2 className={styles.sectionTitle}>Мои курсы</h2>
 
-        {courses.length === 0 ? (
+        {selectedCourses.length === 0 ? (
           <div className={styles.noCourses}>
             <p>У вас пока нет добавленных курсов</p>
             <button
@@ -184,7 +198,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className={styles.coursesGrid}>
-            {courses.map((course) => {
+            {selectedCourses.map((course) => {
               const progress = calculateCourseProgress(course._id);
               const status = getCourseStatus(course._id);
 
@@ -194,8 +208,8 @@ export default function ProfilePage() {
                     <Image
                       src={`/images/${course.nameEN.toLowerCase()}.jpg`}
                       alt={course.nameRU}
-                      width={360}
-                      height={325}
+                      width={320}
+                      height={200}
                       className={styles.courseImage}
                     />
                     <button
@@ -250,19 +264,19 @@ export default function ProfilePage() {
                     </div>
 
                     <div className={styles.progressWrapper}>
-                      <span className={styles.progressText}>
-                        Прогресс {progress}%
-                      </span>
                       <div className={styles.progressBar}>
                         <div
                           className={styles.progressFill}
                           style={{ width: `${progress}%` }}
                         />
                       </div>
+                      <span className={styles.progressText}>
+                        Прогресс {progress}%
+                      </span>
                     </div>
 
                     <button
-                      className={`${styles.actionButton} ${styles[`button-${status}`]}`}
+                      className={styles.actionButton}
                       onClick={() => handleStartCourse(course._id)}
                     >
                       {status === 'not-started' && 'Начать тренировки'}
@@ -276,6 +290,16 @@ export default function ProfilePage() {
           </div>
         )}
       </section>
+
+      {token && selectedCourseIdForModal && (
+        <SelectWorkout
+          courseId={selectedCourseIdForModal}
+          token={token}
+          isOpen={isSelectWorkoutOpen}
+          onClose={() => dispatch(closeSelectWorkoutModal())}
+          onSelectWorkout={handleSelectWorkout}
+        />
+      )}
     </div>
   );
 }
