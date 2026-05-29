@@ -8,6 +8,7 @@ import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AxiosError } from 'axios';
 import { signUp } from '@/services/auth/authApi';
+import { validatePassword } from '@/utils/validation';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -31,20 +32,6 @@ export default function Signup() {
     setRepeatPassword(e.target.value);
     setErrorMessage('');
   };
-  
-  const validatePassword = (pwd: string): string | null => {
-    if (pwd.length < 6) {
-      return 'Пароль должен содержать не менее 6 символов';
-    }
-    const specialChars = (pwd.match(/[^a-zA-Z0-9]/g) || []).length;
-    if (specialChars < 2) {
-      return 'Пароль должен содержать не менее 2 спецсимволов';
-    }
-    if (!/[A-Z]/.test(pwd)) {
-      return 'Пароль должен содержать как минимум одну заглавную букву';
-    }
-    return null;
-  };
 
   const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -58,7 +45,6 @@ export default function Signup() {
       return setErrorMessage('Пароли не совпадают');
     }
 
-    // Валидация пароля на клиенте
     const passwordError = validatePassword(password);
     if (passwordError) {
       return setErrorMessage(passwordError);
@@ -67,11 +53,11 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      await signUp({ email, password });      
+      await signUp({ email, password });
       router.push('/auth/signin');
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.response) {          
+        if (error.response) {
           setErrorMessage(error.response.data.message || 'Ошибка регистрации');
         } else if (error.request) {
           setErrorMessage('Отсутствует интернет. Попробуйте позже');
