@@ -98,23 +98,86 @@
   background: #c6ff00;
 }
 
-@media (max-width: 426px) {
-  .listHeader {
-    flex-direction: column;
+@media (max-width: 1208px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
-  
+}
+
+@media (max-width: 807px) {
+  .coursesGrid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: flex-start;
+  }
+
+  .card {
+    width: calc(50% - 12px); 
+    max-width: 343px;
+  }
+
+  .cardImageContainer {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+
+  .cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 376px) {
+  .coursesGrid {
+    gap: 16px;    
+  }
+
   .listTitle {
     font-size: 32px;
-    width: 100%;
-    margin-bottom: 24px;
   }
-  
-  .sloganBlock {
+
+  .sloganText {
     display: none;
   }
-  
-  .coursesGrid {
-    grid-template-columns: 1fr;
-    gap: 24px;
+
+  .card {
+    border-radius: 20px;
   }
+
+  .cardInfo {
+    padding: 16px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+  }
+
+  .cardParams {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .paramItem {
+    font-size: 13px;
+  }
+
+  .paramItem img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .addButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .addButton img {
+    width: 24px;
+    height: 24px;
+  }  
 }

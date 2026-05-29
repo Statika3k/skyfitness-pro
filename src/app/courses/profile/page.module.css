@@ -269,16 +269,14 @@
   background: #c6ff00;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1208px) {
   .coursesGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
 }
 
-@media (max-width: 768px) {
-  .profilePage {
-    padding: 20px 16px 60px;
-  }
+@media (max-width: 807px) { 
 
   .profileCard {
     flex-direction: column;
@@ -305,10 +303,127 @@
   }
 
   .courseImageWrapper {
-    height: 180px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+
+  .courseImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .courseTitle {
     font-size: 20px;
+  }
+}
+
+@media (max-width: 375px) { 
+
+  .pageTitle {
+    font-size: 24px;
+    padding-bottom: 24px;
+  }
+
+  .profileCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .avatarWrapper {
+    align-self: center;
+  }
+
+  .avatarPlaceholder {
+    width: 141px;
+    height: 141px;
+    border-radius: 20px;
+  }
+
+  .profileInfo {
+    width: 100%;
+    align-items: start;
+    text-align: left;
+  }
+
+  .userName {
+    font-size: 24px;
+  }
+
+  .userLogin {
+    font-size: 16px;
+  }
+
+  .logoutButton {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+  }
+
+  .courseCard {
+    border-radius: 20px;
+  }
+
+  .courseImageWrapper {
+    width: 343px;
+    height: 325px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .courseImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .courseContent {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .courseTitle {
+    font-size: 18px;
+  }
+
+  .courseMeta {
+    gap: 12px;
+  }
+
+  .metaItem {
+    font-size: 13px;
+  }
+
+  .courseDifficulty {
+    font-size: 13px;
+  }
+
+  .progressText {
+    font-size: 13px;
+  }
+
+  .actionButton {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .deleteButton {
+    width: 36px;
+    height: 36px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .deleteButton img {
+    width: 24px;
+    height: 24px;
   }
 }

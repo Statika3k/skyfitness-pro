@@ -232,9 +232,5 @@
     min-height: auto;
     max-height: 400px;
     gap: 24px;
-  }
-
-  .title {
-    font-size: 24px;
-  }
+  }  
 }

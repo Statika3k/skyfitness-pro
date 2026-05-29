@@ -127,20 +127,58 @@
   line-height: 110%;
 }
 
-@media (max-width: 426px) {
+@media (max-width: 807px) {
   .header {
-    padding: 20px 16px;
+    padding: 16px 0;
   }
-  
+
+  .logoImage {
+    width: 180px;
+    height: auto;
+  }
+
+  .userButton {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .userName {
+    display: none; 
+  }
+
+  .loginButton {
+    width: 90px;
+    height: 44px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 375px) {
+  .header {
+    padding: 12px 0;
+  }
+
   .logoText {
     display: none;
   }
-  
-  .userName {
-    display: none;
+
+  .logoImage {
+    width: 160px;
   }
-  
+
   .userButton {
-    padding: 8px;
+    padding: 4px 8px;
+  }
+
+  .userAvatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .loginButton {
+    width: 83px;
+    height: 36px;
+    font-size: 18px;
   }
 }
+

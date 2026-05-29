@@ -5,11 +5,18 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { getCourseById, addUserCourse, getAllCourses } from '@/services/courses/coursesApi';
+import {
+  getCourseById,
+  addUserCourse,
+  getAllCourses,
+} from '@/services/courses/coursesApi';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { mapApiCourseToUI } from '@/utils/helpers';
 import { Course } from '@/types';
-import { addSelectedCourse, setSelectedCourses } from '@/store/features/CourseSlice';
+import {
+  addSelectedCourse,
+  setSelectedCourses,
+} from '@/store/features/CourseSlice';
 import { getUserInfo } from '@/services/auth/authApi';
 
 export default function CoursePage() {
@@ -29,17 +36,15 @@ export default function CoursePage() {
 
   useEffect(() => {
     const syncUserCourses = async () => {
-      // Загружаем только если есть токен и список в Redux ещё пуст
       if (token && selectedCourses.length === 0) {
         try {
           const userInfo = await getUserInfo(token);
           const allCourses = await getAllCourses();
-          
-          // Фильтруем только те курсы, которые добавил пользователь
+
           const userCourses = allCourses.filter((course) =>
-            userInfo.selectedCourses.includes(course._id)
+            userInfo.selectedCourses.includes(course._id),
           );
-          
+
           dispatch(setSelectedCourses(userCourses));
         } catch (error) {
           console.error('Ошибка синхронизации курсов:', error);
@@ -78,13 +83,13 @@ export default function CoursePage() {
     }
     setIsAdding(true);
     try {
-      await addUserCourse(token, course._id);      
+      await addUserCourse(token, course._id);
       dispatch(addSelectedCourse(course));
     } catch (err) {
       console.error('Error adding course:', err);
       alert('Не удалось добавить курс');
     } finally {
-      setIsAdding(false)
+      setIsAdding(false);
     }
   };
 
@@ -109,8 +114,8 @@ export default function CoursePage() {
 
   return (
     <div className={styles.coursePage}>
-      <header 
-        className={styles.header} 
+      <header
+        className={styles.header}
         style={{ backgroundColor: uiCourse.color }}
       >
         <h1 className={styles.title}>{course.nameRU}</h1>
@@ -150,48 +155,7 @@ export default function CoursePage() {
           </div>
         </section>
 
-        <section className={styles.actionBlock}>
-          <div className={styles.actionContent}>
-            <h2 className={styles.actionTitle}>
-              Начните путь <br /> к новому телу
-            </h2>
-            <ul className={styles.benefitsList}>
-              <li>проработка всех групп мышц</li>
-              <li>тренировка суставов</li>
-              <li>улучшение циркуляции крови</li>
-              <li>упражнения заряжают бодростью</li>
-              <li>помогают противостоять стрессам</li>
-            </ul>
-
-            {token ? (
-              isCourseAdded ? (
-                <button 
-                  className={styles.primaryButton}
-                  disabled
-                  style={{ background: '#cccccc', cursor: 'not-allowed' }}
-                >
-                  Курс добавлен ✓
-                </button>
-              ) : (
-                <button 
-                  className={styles.primaryButton}
-                  onClick={handleAddCourse}
-                  disabled={isAdding}
-                >
-                  {isAdding ? 'Добавление...' : 'Добавить курс'}
-                </button>
-              )
-            ) : (
-              <button 
-                className={styles.primaryButton}
-                onClick={handleLoginClick}
-              >
-                Войдите, чтобы добавить курс
-              </button>
-            )}
-          </div>
-
-          <div className={styles.actionVisuals}>
+        <div className={styles.actionVisuals}>
             <Image
               src="/images/Vector.png"
               alt="Декоративная черная линия"
@@ -216,6 +180,47 @@ export default function CoursePage() {
               className={styles.runnerImage}
               priority
             />
+          </div>
+
+        <section className={styles.actionBlock}>
+          <div className={styles.actionContent}>
+            <h2 className={styles.actionTitle}>
+              Начните путь <br /> к новому телу
+            </h2>
+            <ul className={styles.benefitsList}>
+              <li>проработка всех групп мышц</li>
+              <li>тренировка суставов</li>
+              <li>улучшение циркуляции крови</li>
+              <li>упражнения заряжают бодростью</li>
+              <li>помогают противостоять стрессам</li>
+            </ul>
+
+            {token ? (
+              isCourseAdded ? (
+                <button
+                  className={styles.primaryButton}
+                  disabled
+                  style={{ background: '#cccccc', cursor: 'not-allowed' }}
+                >
+                  Курс добавлен ✓
+                </button>
+              ) : (
+                <button
+                  className={styles.primaryButton}
+                  onClick={handleAddCourse}
+                  disabled={isAdding}
+                >
+                  {isAdding ? 'Добавление...' : 'Добавить курс'}
+                </button>
+              )
+            ) : (
+              <button
+                className={styles.primaryButton}
+                onClick={handleLoginClick}
+              >
+                Войдите, чтобы добавить курс
+              </button>
+            )}
           </div>
         </section>
       </main>
